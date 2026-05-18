@@ -10,37 +10,123 @@ import '../../../features/finances/providers/finances_provider.dart';
 import '../../../features/habits/providers/habits_provider.dart';
 import '../../../features/sleep/providers/sleep_provider.dart';
 
+// ── Data models ───────────────────────────────────────────────────────────────
+
+class _Mod {
+  final String route;
+  final IconData icon;
+  final String label;
+  final String subtitle;
+  final Color color;
+  final List<Color> gradient;
+
+  const _Mod(this.route, this.icon, this.label, this.subtitle, this.color,
+      this.gradient);
+}
+
+class _Category {
+  final String title;
+  final IconData icon;
+  final _Mod left;
+  final _Mod right;
+  final _Mod featured;
+
+  const _Category(this.title, this.icon, this.left, this.right, this.featured);
+}
+
+// ── Module definitions ────────────────────────────────────────────────────────
+
+const _habits = _Mod('/habits', Icons.check_circle_rounded, 'Hábitos',
+    'Tu racha diaria', AppColors.habits,
+    [Color(0xFF8B5CF6), Color(0xFF6D28D9)]);
+
+const _routines = _Mod('/routines', Icons.playlist_add_check_rounded, 'Rutinas',
+    'Estructura tu día', AppColors.routines,
+    [Color(0xFF6366F1), Color(0xFF4F46E5)]);
+
+const _timer = _Mod('/timer', Icons.timer_rounded, 'Temporizador',
+    'Sesiones de enfoque', AppColors.timer,
+    [Color(0xFFEAB308), Color(0xFFCA8A04)]);
+
+const _sleep = _Mod('/sleep', Icons.bedtime_rounded, 'Sueño',
+    'Registro y calidad', AppColors.sleep,
+    [Color(0xFF3B82F6), Color(0xFF2563EB)]);
+
+const _journal = _Mod('/journal', Icons.auto_stories_rounded, 'Diario',
+    'Reflexiones personales', AppColors.journal,
+    [Color(0xFFEC4899), Color(0xFFDB2777)]);
+
+const _ideas = _Mod('/ideas', Icons.lightbulb_rounded, 'Ideas',
+    'Captura y organiza', AppColors.ideas,
+    [Color(0xFFF59E0B), Color(0xFFD97706)]);
+
+const _finances = _Mod('/finances', Icons.account_balance_wallet_rounded,
+    'Finanzas', 'Control de gastos', AppColors.finances,
+    [Color(0xFF10B981), Color(0xFF059669)]);
+
+const _stats = _Mod('/stats', Icons.bar_chart_rounded, 'Estadísticas',
+    'Analiza tu progreso', AppColors.steps,
+    [Color(0xFFEAB308), Color(0xFFCA8A04)]);
+
+const _ai = _Mod('/ai', Icons.psychology_rounded, 'LifeCoach',
+    'Tu agente IA personal', AppColors.ai,
+    [Color(0xFF06B6D4), Color(0xFF0891B2)]);
+
+const _categories = [
+  _Category(
+    'Productividad',
+    Icons.rocket_launch_rounded,
+    _habits,
+    _routines,
+    _timer,
+  ),
+  _Category(
+    'Bienestar',
+    Icons.spa_rounded,
+    _sleep,
+    _journal,
+    _ideas,
+  ),
+  _Category(
+    'Análisis',
+    Icons.insights_rounded,
+    _finances,
+    _stats,
+    _ai,
+  ),
+];
+
+// ── Screen ────────────────────────────────────────────────────────────────────
+
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authProvider).user;
-    final habits = ref.watch(habitsProvider);
-    final finances = ref.watch(financesProvider.notifier);
-    final sleepEntries = ref.watch(sleepProvider);
+    final user      = ref.watch(authProvider).user;
+    final habits    = ref.watch(habitsProvider);
+    final finances  = ref.watch(financesProvider.notifier);
+    final sleepList = ref.watch(sleepProvider);
 
-    final now = DateTime.now();
-    final firstName = user?.name.split(' ').first ?? 'Usuario';
-    final habitsToday = habits.where((h) => h.isCompletedToday()).length;
-    final totalHabits = habits.length;
-    final lastSleep = sleepEntries.isNotEmpty ? sleepEntries.first : null;
+    final now          = DateTime.now();
+    final firstName    = user?.name.split(' ').first ?? 'Usuario';
+    final habitsToday  = habits.where((h) => h.isCompletedToday()).length;
+    final totalHabits  = habits.length;
+    final lastSleep    = sleepList.isNotEmpty ? sleepList.first : null;
     final pendingHabits = habits.where((h) => !h.isCompletedToday()).toList();
 
-    final habitsProgress =
-        totalHabits > 0 ? habitsToday / totalHabits : 0.0;
-    final sleepProgress = lastSleep != null
+    final habitsProgress  = totalHabits > 0 ? habitsToday / totalHabits : 0.0;
+    final sleepProgress   = lastSleep != null
         ? (lastSleep.duration.inMinutes / 60.0 / 8.0).clamp(0.0, 1.0)
         : 0.0;
-    final financeProgress = finances.balance > 0
-        ? 1.0
+    final financeProgress = finances.balance > 0 ? 1.0
         : (finances.balance > -500 ? 0.5 : 0.2);
 
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
-          // ── AppBar ────────────────────────────────────────────────────────
+          // ── AppBar ──────────────────────────────────────────────────────
           SliverAppBar(
             floating: true,
             snap: true,
@@ -50,8 +136,7 @@ class DashboardScreen extends ConsumerWidget {
             title: Row(
               children: [
                 Container(
-                  width: 30,
-                  height: 30,
+                  width: 30, height: 30,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [AppColors.primary, AppColors.accent],
@@ -64,15 +149,12 @@ class DashboardScreen extends ConsumerWidget {
                       color: AppColors.background, size: 17),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  'LifeHub',
-                  style: GoogleFonts.inter(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 17,
-                    letterSpacing: -0.3,
-                  ),
-                ),
+                Text('LifeHub',
+                    style: GoogleFonts.inter(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 17,
+                        letterSpacing: -0.3)),
               ],
             ),
             actions: [
@@ -85,8 +167,7 @@ class DashboardScreen extends ConsumerWidget {
                 onTap: () => _confirmLogout(context, ref),
                 child: Container(
                   margin: const EdgeInsets.only(right: 16),
-                  width: 34,
-                  height: 34,
+                  width: 34, height: 34,
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       colors: [AppColors.primary, AppColors.accent],
@@ -98,13 +179,9 @@ class DashboardScreen extends ConsumerWidget {
                   child: Center(
                     child: Text(
                       (user?.name.isNotEmpty ?? false)
-                          ? user!.name[0].toUpperCase()
-                          : 'U',
-                      style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                      ),
+                          ? user!.name[0].toUpperCase() : 'U',
+                      style: GoogleFonts.inter(color: AppColors.background,
+                          fontWeight: FontWeight.w700, fontSize: 14),
                     ),
                   ),
                 ),
@@ -119,147 +196,124 @@ class DashboardScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _greeting(now.hour),
-                    style: GoogleFonts.inter(
-                        color: AppColors.textSecondary, fontSize: 14),
-                  ),
+                  Text(_greeting(now.hour),
+                      style: GoogleFonts.inter(
+                          color: AppColors.textSecondary, fontSize: 14)),
                   const SizedBox(height: 4),
-                  Text(
-                    firstName,
-                    style: GoogleFonts.inter(
-                      color: AppColors.textPrimary,
-                      fontSize: 34,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.8,
-                    ),
-                  ),
+                  Text(firstName,
+                      style: GoogleFonts.inter(
+                          color: AppColors.textPrimary,
+                          fontSize: 34,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.8)),
                   const SizedBox(height: 2),
-                  Text(
-                    'Tu camino hacia el crecimiento empieza hoy',
-                    style: GoogleFonts.inter(
-                        color: AppColors.textSecondary, fontSize: 13),
-                  ),
+                  Text('Tu camino hacia el crecimiento empieza hoy',
+                      style: GoogleFonts.inter(
+                          color: AppColors.textSecondary, fontSize: 13)),
                   const SizedBox(height: 24),
-                  _HeroProgressCard(
+                  _HeroCard(
                     habitsProgress: habitsProgress,
                     sleepProgress: sleepProgress,
                     financeProgress: financeProgress,
                     habitsToday: habitsToday,
                     totalHabits: totalHabits,
                     sleepHours: lastSleep != null
-                        ? lastSleep.duration.inMinutes / 60.0
-                        : null,
+                        ? lastSleep.duration.inMinutes / 60.0 : null,
                     balance: finances.balance,
                   ),
                   const SizedBox(height: 28),
+
+                  // ── Quick actions header ───────────────────────────────
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Recomendaciones Diarias',
-                        style: GoogleFonts.inter(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      Text(
-                        DateFormat("d MMM", 'es').format(now),
-                        style: GoogleFonts.inter(
-                            color: AppColors.textSecondary, fontSize: 12),
-                      ),
+                      Text('Para ti hoy',
+                          style: GoogleFonts.inter(
+                              fontSize: 16, fontWeight: FontWeight.w700,
+                              color: AppColors.textPrimary)),
+                      Text(DateFormat("d MMM", 'es').format(now),
+                          style: GoogleFonts.inter(
+                              color: AppColors.textSecondary, fontSize: 12)),
                     ],
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                 ],
               ),
             ),
           ),
 
-          // ── Horizontal action cards ──────────────────────────────────────
+          // ── Horizontal quick-action cards ────────────────────────────────
           SliverToBoxAdapter(
             child: SizedBox(
-              height: 152,
+              height: 140,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 children: [
                   if (pendingHabits.isEmpty)
-                    _ActionCard(
+                    _QuickCard(
                       icon: Icons.celebration_rounded,
                       title: '¡Todo completado!',
                       subtitle: 'Todos los hábitos del día',
                       color: AppColors.habits,
-                      buttonLabel: 'Ver logros',
+                      label: 'Ver logros',
                       onTap: () => context.go('/habits'),
                     )
                   else
-                    ...pendingHabits.take(2).map((h) => _ActionCard(
+                    ...pendingHabits.take(2).map((h) => _QuickCard(
                           icon: Icons.check_circle_outline_rounded,
                           title: h.name,
                           subtitle: h.reminderTime != null
                               ? '${h.reminderTime} · ${h.timeOfDay}'
                               : 'Hábito pendiente',
                           color: AppColors.habits,
-                          buttonLabel: 'Iniciar',
+                          label: 'Iniciar',
                           onTap: () => context.go('/habits'),
                         )),
-                  _ActionCard(
+                  _QuickCard(
                     icon: Icons.psychology_rounded,
-                    title: 'LifeCoach IA',
+                    title: 'LifeCoach',
                     subtitle: 'Tu agente personal',
                     color: AppColors.ai,
-                    buttonLabel: 'Chatear',
+                    label: 'Abrir',
                     onTap: () => context.go('/ai'),
                   ),
-                  _ActionCard(
-                    icon: Icons.add_card_rounded,
-                    title: 'Registrar gasto',
-                    subtitle: 'Balance al día',
-                    color: AppColors.finances,
-                    buttonLabel: 'Añadir',
-                    onTap: () => context.go('/finances'),
-                  ),
                   if (lastSleep == null)
-                    _ActionCard(
+                    _QuickCard(
                       icon: Icons.bedtime_rounded,
                       title: 'Registrar sueño',
-                      subtitle: 'Aún sin registro',
+                      subtitle: 'Sin registro aún',
                       color: AppColors.sleep,
-                      buttonLabel: 'Registrar',
+                      label: 'Registrar',
                       onTap: () => context.go('/sleep'),
                     ),
-                  _ActionCard(
-                    icon: Icons.bar_chart_rounded,
-                    title: 'Ver estadísticas',
-                    subtitle: 'Analiza tu progreso',
-                    color: AppColors.steps,
-                    buttonLabel: 'Explorar',
-                    onTap: () => context.go('/stats'),
+                  _QuickCard(
+                    icon: Icons.add_card_rounded,
+                    title: 'Nuevo gasto',
+                    subtitle: 'Mantén balance al día',
+                    color: AppColors.finances,
+                    label: 'Añadir',
+                    onTap: () => context.go('/finances'),
                   ),
                 ],
               ),
             ),
           ),
 
-          // ── Modules grid ─────────────────────────────────────────────────
+          // ── Categorized modules ──────────────────────────────────────────
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 28, 20, 32),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Módulos de Crecimiento',
-                    style: GoogleFonts.inter(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  const _ModulesGrid(),
+                  Text('Módulos',
+                      style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary)),
+                  const SizedBox(height: 16),
+                  ..._categories.map((cat) => _CategorySection(cat)),
                 ],
               ),
             ),
@@ -299,18 +353,15 @@ class DashboardScreen extends ConsumerWidget {
   }
 }
 
-// ── Hero progress card ────────────────────────────────────────────────────────
+// ── Hero card ─────────────────────────────────────────────────────────────────
 
-class _HeroProgressCard extends StatelessWidget {
-  final double habitsProgress;
-  final double sleepProgress;
-  final double financeProgress;
-  final int habitsToday;
-  final int totalHabits;
+class _HeroCard extends StatelessWidget {
+  final double habitsProgress, sleepProgress, financeProgress;
+  final int habitsToday, totalHabits;
   final double? sleepHours;
   final double balance;
 
-  const _HeroProgressCard({
+  const _HeroCard({
     required this.habitsProgress,
     required this.sleepProgress,
     required this.financeProgress,
@@ -342,17 +393,14 @@ class _HeroProgressCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(23),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // ── Rings ──────────────────────────────────────────────────────
             SizedBox(
-              width: 144,
-              height: 144,
+              width: 136, height: 136,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
                   CustomPaint(
-                    size: const Size(144, 144),
+                    size: const Size(136, 136),
                     painter: _RingsPainter(
                       habitsProgress: habitsProgress,
                       sleepProgress: sleepProgress,
@@ -362,65 +410,53 @@ class _HeroProgressCard extends StatelessWidget {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        '$overall%',
-                        style: GoogleFonts.inter(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
-                          letterSpacing: -1,
-                        ),
-                      ),
-                      Text(
-                        'hoy',
-                        style: GoogleFonts.inter(
-                            fontSize: 11, color: AppColors.textSecondary),
-                      ),
+                      Text('$overall%',
+                          style: GoogleFonts.inter(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.textPrimary,
+                              letterSpacing: -1)),
+                      Text('hoy',
+                          style: GoogleFonts.inter(
+                              fontSize: 11,
+                              color: AppColors.textSecondary)),
                     ],
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 20),
-
-            // ── Legend ────────────────────────────────────────────────────
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Mi Progreso',
-                    style: GoogleFonts.inter(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
+                  Text('Mi Progreso',
+                      style: GoogleFonts.inter(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary)),
                   const SizedBox(height: 3),
-                  Text(
-                    'Progreso: $overall%',
-                    style: GoogleFonts.inter(
-                        fontSize: 12, color: AppColors.textSecondary),
-                  ),
-                  const SizedBox(height: 18),
-                  _LegendItem(
+                  Text('Progreso global: $overall%',
+                      style: GoogleFonts.inter(
+                          fontSize: 12, color: AppColors.textSecondary)),
+                  const SizedBox(height: 16),
+                  _LegendRow(
                     color: AppColors.habits,
                     label: 'Hábitos',
                     detail: '$habitsToday/$totalHabits',
                     progress: habitsProgress,
                   ),
-                  const SizedBox(height: 12),
-                  _LegendItem(
+                  const SizedBox(height: 10),
+                  _LegendRow(
                     color: AppColors.sleep,
                     label: 'Sueño',
                     detail: sleepHours != null
-                        ? '${sleepHours!.toStringAsFixed(1)}h'
-                        : '--',
+                        ? '${sleepHours!.toStringAsFixed(1)}h' : '--',
                     progress: sleepProgress,
                   ),
-                  const SizedBox(height: 12),
-                  _LegendItem(
+                  const SizedBox(height: 10),
+                  _LegendRow(
                     color: AppColors.finances,
                     label: 'Finanzas',
                     detail: balance >= 0 ? 'Positivo' : 'Negativo',
@@ -436,18 +472,14 @@ class _HeroProgressCard extends StatelessWidget {
   }
 }
 
-class _LegendItem extends StatelessWidget {
+class _LegendRow extends StatelessWidget {
   final Color color;
-  final String label;
-  final String detail;
+  final String label, detail;
   final double progress;
 
-  const _LegendItem({
-    required this.color,
-    required this.label,
-    required this.detail,
-    required this.progress,
-  });
+  const _LegendRow(
+      {required this.color, required this.label, required this.detail,
+       required this.progress});
 
   @override
   Widget build(BuildContext context) {
@@ -456,32 +488,24 @@ class _LegendItem extends StatelessWidget {
       children: [
         Row(
           children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration:
-                  BoxDecoration(color: color, shape: BoxShape.circle),
-            ),
-            const SizedBox(width: 7),
+            Container(width: 7, height: 7,
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+            const SizedBox(width: 6),
             Text(label,
                 style: GoogleFonts.inter(
-                    fontSize: 12, color: AppColors.textSecondary)),
+                    fontSize: 11, color: AppColors.textSecondary)),
             const Spacer(),
-            Text(
-              '$detail (${(progress * 100).round()}%)',
-              style: GoogleFonts.inter(
-                  fontSize: 11,
-                  color: color,
-                  fontWeight: FontWeight.w600),
-            ),
+            Text('$detail (${(progress * 100).round()}%)',
+                style: GoogleFonts.inter(
+                    fontSize: 10, color: color, fontWeight: FontWeight.w600)),
           ],
         ),
-        const SizedBox(height: 5),
+        const SizedBox(height: 4),
         ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
             value: progress.clamp(0.0, 1.0),
-            backgroundColor: color.withAlpha(30),
+            backgroundColor: color.withAlpha(28),
             valueColor: AlwaysStoppedAnimation<Color>(color),
             minHeight: 3,
           ),
@@ -491,148 +515,210 @@ class _LegendItem extends StatelessWidget {
   }
 }
 
-// ── Rings painter ─────────────────────────────────────────────────────────────
-
 class _RingsPainter extends CustomPainter {
-  final double habitsProgress;
-  final double sleepProgress;
-  final double financeProgress;
+  final double habitsProgress, sleepProgress, financeProgress;
 
-  const _RingsPainter({
-    required this.habitsProgress,
-    required this.sleepProgress,
-    required this.financeProgress,
-  });
+  const _RingsPainter(
+      {required this.habitsProgress,
+       required this.sleepProgress,
+       required this.financeProgress});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    _drawRing(canvas, center, size.width / 2 - 8, habitsProgress,
-        AppColors.habits);
-    _drawRing(canvas, center, size.width / 2 - 26, sleepProgress,
-        AppColors.sleep);
-    _drawRing(canvas, center, size.width / 2 - 44, financeProgress,
-        AppColors.finances);
+    final c = Offset(size.width / 2, size.height / 2);
+    _ring(canvas, c, size.width / 2 - 8,  habitsProgress,  AppColors.habits);
+    _ring(canvas, c, size.width / 2 - 24, sleepProgress,   AppColors.sleep);
+    _ring(canvas, c, size.width / 2 - 40, financeProgress, AppColors.finances);
   }
 
-  void _drawRing(Canvas canvas, Offset center, double radius,
-      double progress, Color color) {
-    final trackPaint = Paint()
-      ..color = color.withAlpha(28)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 13
-      ..strokeCap = StrokeCap.round;
-    canvas.drawCircle(center, radius, trackPaint);
-
-    if (progress > 0) {
-      final progressPaint = Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 13
-        ..strokeCap = StrokeCap.round;
+  void _ring(Canvas canvas, Offset c, double r, double p, Color col) {
+    canvas.drawCircle(c, r,
+        Paint()
+          ..color = col.withAlpha(28)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 11
+          ..strokeCap = StrokeCap.round);
+    if (p > 0) {
       canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        -pi / 2,
-        2 * pi * progress.clamp(0.0, 1.0),
-        false,
-        progressPaint,
-      );
+          Rect.fromCircle(center: c, radius: r),
+          -pi / 2, 2 * pi * p.clamp(0.0, 1.0), false,
+          Paint()
+            ..color = col
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 11
+            ..strokeCap = StrokeCap.round);
     }
   }
 
   @override
-  bool shouldRepaint(_RingsPainter old) =>
-      habitsProgress != old.habitsProgress ||
-      sleepProgress != old.sleepProgress ||
-      financeProgress != old.financeProgress;
+  bool shouldRepaint(_RingsPainter o) =>
+      habitsProgress != o.habitsProgress ||
+      sleepProgress != o.sleepProgress ||
+      financeProgress != o.financeProgress;
 }
 
-// ── Action card ───────────────────────────────────────────────────────────────
+// ── Quick-action card (horizontal scroll) ─────────────────────────────────────
 
-class _ActionCard extends StatelessWidget {
+class _QuickCard extends StatelessWidget {
   final IconData icon;
-  final String title;
-  final String subtitle;
+  final String title, subtitle, label;
   final Color color;
-  final String buttonLabel;
   final VoidCallback onTap;
 
-  const _ActionCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.color,
-    required this.buttonLabel,
-    required this.onTap,
-  });
+  const _QuickCard(
+      {required this.icon, required this.title, required this.subtitle,
+       required this.color, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 158,
+        width: 150,
         margin: const EdgeInsets.only(right: 12),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              color.withAlpha(38),
-              AppColors.surfaceCard,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
+              colors: [color.withAlpha(35), AppColors.surfaceCard],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(color: color.withAlpha(55)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 36,
-              height: 36,
+              width: 34, height: 34,
               decoration: BoxDecoration(
                 color: color.withAlpha(35),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: color, size: 20),
+              child: Icon(icon, color: color, size: 18),
             ),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
-              style: GoogleFonts.inter(
-                  fontSize: 11, color: AppColors.textSecondary),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            const SizedBox(height: 8),
+            Text(title,
+                style: GoogleFonts.inter(
+                    fontSize: 12, fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary),
+                maxLines: 2, overflow: TextOverflow.ellipsis),
             const Spacer(),
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
                 color: color.withAlpha(28),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(7),
                 border: Border.all(color: color.withAlpha(90)),
               ),
-              child: Text(
-                buttonLabel,
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: color,
+              child: Text(label,
+                  style: GoogleFonts.inter(
+                      fontSize: 10, fontWeight: FontWeight.w600, color: color)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Category section ──────────────────────────────────────────────────────────
+
+class _CategorySection extends StatelessWidget {
+  final _Category cat;
+  // ignore: unused_element
+  const _CategorySection(this.cat, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section header
+          Row(
+            children: [
+              Icon(cat.icon, size: 13, color: AppColors.textSecondary),
+              const SizedBox(width: 6),
+              Text(cat.title.toUpperCase(),
+                  style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textSecondary,
+                      letterSpacing: 0.8)),
+            ],
+          ),
+          const SizedBox(height: 10),
+          // Two compact cards side by side
+          Row(
+            children: [
+              Expanded(child: _ModCard(cat.left)),
+              const SizedBox(width: 10),
+              Expanded(child: _ModCard(cat.right)),
+            ],
+          ),
+          const SizedBox(height: 10),
+          // Featured wide card
+          _ModCardWide(cat.featured),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Compact module card (half width) ─────────────────────────────────────────
+
+class _ModCard extends StatelessWidget {
+  final _Mod mod;
+  // ignore: unused_element
+  const _ModCard(this.mod, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.go(mod.route),
+      child: Container(
+        height: 72,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceCard,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: mod.color.withAlpha(50)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 38, height: 38,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: mod.gradient,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
+                borderRadius: BorderRadius.circular(11),
+              ),
+              child: Icon(mod.icon, color: Colors.white, size: 19),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(mod.label,
+                      style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                  const SizedBox(height: 2),
+                  Text(mod.subtitle,
+                      style: GoogleFonts.inter(
+                          fontSize: 10, color: AppColors.textSecondary),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                ],
               ),
             ),
           ],
@@ -642,157 +728,71 @@ class _ActionCard extends StatelessWidget {
   }
 }
 
-// ── Modules grid ──────────────────────────────────────────────────────────────
+// ── Featured wide module card (full width) ────────────────────────────────────
 
-class _ModuleItem {
-  final String route;
-  final IconData icon;
-  final String label;
-  final Color color;
-  final List<Color> gradient;
-
-  const _ModuleItem(
-      this.route, this.icon, this.label, this.color, this.gradient);
-}
-
-class _ModulesGrid extends StatelessWidget {
-  static const _modules = [
-    _ModuleItem(
-      '/habits',
-      Icons.check_circle_rounded,
-      'Hábitos',
-      AppColors.habits,
-      [Color(0xFF00D2FF), Color(0xFF0099CC)],  // Azul eléctrico
-    ),
-    _ModuleItem(
-      '/finances',
-      Icons.account_balance_wallet_rounded,
-      'Finanzas',
-      AppColors.finances,
-      [Color(0xFF00C6A0), Color(0xFF009E80)],  // Verde teal
-    ),
-    _ModuleItem(
-      '/sleep',
-      Icons.bedtime_rounded,
-      'Sueño',
-      AppColors.sleep,
-      [Color(0xFF818CF8), Color(0xFF5B5FCC)],  // Índigo suave
-    ),
-    _ModuleItem(
-      '/journal',
-      Icons.auto_stories_rounded,
-      'Diario',
-      AppColors.journal,
-      [Color(0xFFFF3B30), Color(0xFFCC1F15)],  // Rojo coral
-    ),
-    _ModuleItem(
-      '/routines',
-      Icons.playlist_add_check_rounded,
-      'Rutinas',
-      AppColors.routines,
-      [Color(0xFF00D2FF), Color(0xFF0099CC)],  // Azul eléctrico
-    ),
-    _ModuleItem(
-      '/ideas',
-      Icons.lightbulb_rounded,
-      'Ideas',
-      AppColors.ideas,
-      [Color(0xFFFFCC00), Color(0xFFCC9900)],  // Amarillo oro
-    ),
-    _ModuleItem(
-      '/timer',
-      Icons.timer_rounded,
-      'Temporizador',
-      AppColors.timer,
-      [Color(0xFFFFCC00), Color(0xFFCC9900)],  // Amarillo oro
-    ),
-    _ModuleItem(
-      '/ai',
-      Icons.psychology_rounded,
-      'LifeCoach',
-      AppColors.ai,
-      [Color(0xFF00D2FF), Color(0xFF0099CC)],  // Azul eléctrico
-    ),
-    _ModuleItem(
-      '/stats',
-      Icons.bar_chart_rounded,
-      'Estadísticas',
-      AppColors.steps,
-      [Color(0xFFFFCC00), Color(0xFFCC9900)],  // Amarillo oro
-    ),
-  ];
-
-  const _ModulesGrid();
+class _ModCardWide extends StatelessWidget {
+  final _Mod mod;
+  // ignore: unused_element
+  const _ModCardWide(this.mod, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 1.0,
-      ),
-      itemCount: _modules.length,
-      itemBuilder: (context, i) {
-        final m = _modules[i];
-        return GestureDetector(
-          onTap: () => context.go(m.route),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  m.color.withAlpha(45),
-                  m.color.withAlpha(15),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: m.color.withAlpha(60)),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 46,
-                  height: 46,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: m.gradient,
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: m.color.withAlpha(60),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Icon(m.icon, color: Colors.white, size: 22),
-                ),
-                const SizedBox(height: 9),
-                Text(
-                  m.label,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+    return GestureDetector(
+      onTap: () => context.go(mod.route),
+      child: Container(
+        height: 64,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [mod.color.withAlpha(40), AppColors.surfaceCard],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
           ),
-        );
-      },
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: mod.color.withAlpha(70)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 38, height: 38,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: mod.gradient,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(11),
+                boxShadow: [
+                  BoxShadow(
+                      color: mod.color.withAlpha(50),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3)),
+                ],
+              ),
+              child: Icon(mod.icon, color: Colors.white, size: 19),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(mod.label,
+                      style: GoogleFonts.inter(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary)),
+                  Text(mod.subtitle,
+                      style: GoogleFonts.inter(
+                          fontSize: 11, color: AppColors.textSecondary)),
+                ],
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios_rounded,
+                size: 13, color: mod.color.withAlpha(180)),
+          ],
+        ),
+      ),
     );
   }
 }
