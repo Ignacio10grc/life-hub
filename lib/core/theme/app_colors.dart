@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // ── Fondos — ultra dark, premium ──────────────────────────────────────────
-  static const background      = Color(0xFF020207);  // Negro casi puro con tinte azul
-  static const surface         = Color(0xFF07070F);  // Superficie oscura
-  static const surfaceCard     = Color(0xFF0C0C1A);  // Tarjeta
-  static const surfaceElevated = Color(0xFF111126);  // Elevado (modales, sheets)
+  // ── Fondos — dark navy premium ─────────────────────────────────────────────
+  static const background      = Color(0xFF050A14);  // Navy casi negro
+  static const surface         = Color(0xFF08101E);  // Superficie oscura navy
+  static const surfaceCard     = Color(0xFF0D1828);  // Tarjeta navy
+  static const surfaceElevated = Color(0xFF121F38);  // Elevado (modales, sheets)
 
-  // ── Bordes — muy sutiles ──────────────────────────────────────────────────
-  static const border          = Color(0xFF16162A);  // Borde principal
-  static const borderAccent    = Color(0xFF23234A);  // Borde con foco / hover
+  // ── Bordes — sutiles azul-navy ────────────────────────────────────────────
+  static const border          = Color(0xFF1A2840);  // Borde principal
+  static const borderAccent    = Color(0xFF253868);  // Borde con foco / hover
 
   // ── Marca ─────────────────────────────────────────────────────────────────
   static const primary         = Color(0xFF7C3AED);  // Morado principal
@@ -19,8 +19,8 @@ class AppColors {
 
   // ── Texto ─────────────────────────────────────────────────────────────────
   static const textPrimary     = Color(0xFFF0EFFF);  // Blanco con tinte morado
-  static const textSecondary   = Color(0xFF8585A8);  // Gris-azul medio
-  static const textHint        = Color(0xFF34345A);  // Hint muy sutil
+  static const textSecondary   = Color(0xFF7A80A0);  // Gris-azul medio
+  static const textHint        = Color(0xFF2E3D58);  // Hint muy sutil
 
   // ── Semánticos ────────────────────────────────────────────────────────────
   static const success         = Color(0xFF10B981);
