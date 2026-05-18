@@ -187,12 +187,14 @@ class _SideNav extends StatelessWidget {
                   height: 36,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [AppColors.primary, AppColors.secondary],
+                      colors: [AppColors.primary, AppColors.accent],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(Icons.hub_rounded,
-                      color: Colors.white, size: 20),
+                      color: AppColors.background, size: 20),
                 ),
                 const SizedBox(width: 10),
                 Text(

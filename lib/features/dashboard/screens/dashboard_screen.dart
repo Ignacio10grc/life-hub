@@ -54,14 +54,14 @@ class DashboardScreen extends ConsumerWidget {
                   height: 30,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [AppColors.primary, AppColors.secondary],
+                      colors: [AppColors.primary, AppColors.accent],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(9),
                   ),
                   child: const Icon(Icons.hub_rounded,
-                      color: Colors.white, size: 17),
+                      color: AppColors.background, size: 17),
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -89,7 +89,7 @@ class DashboardScreen extends ConsumerWidget {
                   height: 34,
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [AppColors.primary, AppColors.secondary],
+                      colors: [AppColors.primary, AppColors.accent],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -329,7 +329,7 @@ class _HeroProgressCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: const LinearGradient(
-          colors: [AppColors.habits, AppColors.sleep, AppColors.finances],
+          colors: [AppColors.primary, AppColors.secondary, AppColors.accent],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -662,63 +662,63 @@ class _ModulesGrid extends StatelessWidget {
       Icons.check_circle_rounded,
       'Hábitos',
       AppColors.habits,
-      [Color(0xFF8B5CF6), Color(0xFF6D28D9)],
+      [Color(0xFF00D2FF), Color(0xFF0099CC)],  // Azul eléctrico
     ),
     _ModuleItem(
       '/finances',
       Icons.account_balance_wallet_rounded,
       'Finanzas',
       AppColors.finances,
-      [Color(0xFF10B981), Color(0xFF059669)],
+      [Color(0xFF00C6A0), Color(0xFF009E80)],  // Verde teal
     ),
     _ModuleItem(
       '/sleep',
       Icons.bedtime_rounded,
       'Sueño',
       AppColors.sleep,
-      [Color(0xFF818CF8), Color(0xFF6366F1)],
+      [Color(0xFF818CF8), Color(0xFF5B5FCC)],  // Índigo suave
     ),
     _ModuleItem(
       '/journal',
       Icons.auto_stories_rounded,
       'Diario',
       AppColors.journal,
-      [Color(0xFFEC4899), Color(0xFFDB2777)],
+      [Color(0xFFFF3B30), Color(0xFFCC1F15)],  // Rojo coral
     ),
     _ModuleItem(
       '/routines',
       Icons.playlist_add_check_rounded,
       'Rutinas',
       AppColors.routines,
-      [Color(0xFF3B82F6), Color(0xFF2563EB)],
+      [Color(0xFF00D2FF), Color(0xFF0099CC)],  // Azul eléctrico
     ),
     _ModuleItem(
       '/ideas',
       Icons.lightbulb_rounded,
       'Ideas',
       AppColors.ideas,
-      [Color(0xFFF97316), Color(0xFFEA580C)],
+      [Color(0xFFFFCC00), Color(0xFFCC9900)],  // Amarillo oro
     ),
     _ModuleItem(
       '/timer',
       Icons.timer_rounded,
       'Temporizador',
       AppColors.timer,
-      [Color(0xFFF59E0B), Color(0xFFD97706)],
+      [Color(0xFFFFCC00), Color(0xFFCC9900)],  // Amarillo oro
     ),
     _ModuleItem(
       '/ai',
       Icons.psychology_rounded,
       'LifeCoach',
       AppColors.ai,
-      [Color(0xFF22D3EE), Color(0xFF0891B2)],
+      [Color(0xFF00D2FF), Color(0xFF0099CC)],  // Azul eléctrico
     ),
     _ModuleItem(
       '/stats',
       Icons.bar_chart_rounded,
       'Estadísticas',
       AppColors.steps,
-      [Color(0xFF14B8A6), Color(0xFF0D9488)],
+      [Color(0xFFFFCC00), Color(0xFFCC9900)],  // Amarillo oro
     ),
   ];
 
