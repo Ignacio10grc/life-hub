@@ -24,17 +24,17 @@ class _Group {
   const _Group(this.title, this.items);
 }
 
-// ── Mobile bottom nav (5 tabs) ────────────────────────────────────────────────
+// ── Mobile bottom nav — Inicio en el centro (índice 2) ───────────────────────
 
 const _mobileNav = [
-  _Dest('/', Icons.home_outlined, Icons.home_rounded,
-      'Inicio', AppColors.primary),
   _Dest('/habits', Icons.check_circle_outline, Icons.check_circle_rounded,
       'Hábitos', AppColors.habits),
-  _Dest('/ai', Icons.psychology_outlined, Icons.psychology_rounded,
-      'Coach', AppColors.ai),
   _Dest('/finances', Icons.account_balance_wallet_outlined,
       Icons.account_balance_wallet_rounded, 'Finanzas', AppColors.finances),
+  _Dest('/', Icons.home_outlined, Icons.home_rounded,
+      'Inicio', AppColors.primary),
+  _Dest('/ai', Icons.psychology_outlined, Icons.psychology_rounded,
+      'Coach', AppColors.ai),
   _Dest('/stats', Icons.bar_chart_outlined, Icons.bar_chart_rounded,
       'Progreso', AppColors.steps),
 ];
@@ -55,8 +55,8 @@ const _sidebarGroups = [
         'Temporizador', AppColors.timer),
   ]),
   _Group('Bienestar', [
-    _Dest('/sleep', Icons.bedtime_outlined, Icons.bedtime_rounded,
-        'Sueño', AppColors.sleep),
+    _Dest('/steps', Icons.directions_walk_outlined, Icons.directions_walk_rounded,
+        'Pasos', AppColors.steps),
     _Dest('/journal', Icons.auto_stories_outlined, Icons.auto_stories_rounded,
         'Diario', AppColors.journal),
     _Dest('/ideas', Icons.lightbulb_outline, Icons.lightbulb_rounded,

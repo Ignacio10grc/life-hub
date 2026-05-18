@@ -16,6 +16,7 @@ import '../../features/journal/screens/journal_screen.dart';
 import '../../features/ideas/screens/ideas_screen.dart';
 import '../../features/ai/screens/ai_screen.dart';
 import '../../features/stats/screens/stats_screen.dart';
+import '../../features/steps/screens/steps_screen.dart';
 import '../../shared/widgets/main_scaffold.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -49,6 +50,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(path: '/routines', builder: (_, __) => const RoutinesScreen()),
           GoRoute(path: '/timer', builder: (_, __) => const TimerScreen()),
           GoRoute(path: '/sleep', builder: (_, __) => const SleepScreen()),
+          GoRoute(path: '/steps', builder: (_, __) => const StepsScreen()),
           GoRoute(path: '/journal', builder: (_, __) => const JournalScreen()),
           GoRoute(path: '/ideas', builder: (_, __) => const IdeasScreen()),
           GoRoute(path: '/ai', builder: (_, __) => const AiScreen()),

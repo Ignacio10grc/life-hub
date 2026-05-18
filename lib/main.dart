@@ -16,6 +16,7 @@ void main() async {
     Hive.openBox('habits'),
     Hive.openBox('routines'),
     Hive.openBox('sleep'),
+    Hive.openBox('steps'),
     Hive.openBox('journal'),
     Hive.openBox('ideas'),
     Hive.openBox('ai_chat'),

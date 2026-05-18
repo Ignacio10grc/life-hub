@@ -8,7 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../features/auth/providers/auth_provider.dart';
 import '../../../features/finances/providers/finances_provider.dart';
 import '../../../features/habits/providers/habits_provider.dart';
-import '../../../features/sleep/providers/sleep_provider.dart';
+import '../../../features/steps/providers/steps_provider.dart';
 
 // ── Data models ───────────────────────────────────────────────────────────────
 
@@ -48,9 +48,9 @@ const _timer = _Mod('/timer', Icons.timer_rounded, 'Temporizador',
     'Sesiones de enfoque', AppColors.timer,
     [Color(0xFFEAB308), Color(0xFFCA8A04)]);
 
-const _sleep = _Mod('/sleep', Icons.bedtime_rounded, 'Sueño',
-    'Registro y calidad', AppColors.sleep,
-    [Color(0xFF3B82F6), Color(0xFF2563EB)]);
+const _steps = _Mod('/steps', Icons.directions_walk_rounded, 'Pasos',
+    'Actividad diaria', AppColors.steps,
+    [Color(0xFFEAB308), Color(0xFFCA8A04)]);
 
 const _journal = _Mod('/journal', Icons.auto_stories_rounded, 'Diario',
     'Reflexiones personales', AppColors.journal,
@@ -83,7 +83,7 @@ const _categories = [
   _Category(
     'Bienestar',
     Icons.spa_rounded,
-    _sleep,
+    _steps,
     _journal,
     _ideas,
   ),
@@ -103,24 +103,28 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user      = ref.watch(authProvider).user;
-    final habits    = ref.watch(habitsProvider);
-    final finances  = ref.watch(financesProvider.notifier);
-    final sleepList = ref.watch(sleepProvider);
+    final user          = ref.watch(authProvider).user;
+    final habits        = ref.watch(habitsProvider);
+    final finances      = ref.watch(financesProvider.notifier);
+    final financesList  = ref.watch(financesProvider);
+    final stepsNotifier = ref.watch(stepsProvider.notifier);
 
-    final now          = DateTime.now();
-    final firstName    = user?.name.split(' ').first ?? 'Usuario';
-    final habitsToday  = habits.where((h) => h.isCompletedToday()).length;
-    final totalHabits  = habits.length;
-    final lastSleep    = sleepList.isNotEmpty ? sleepList.first : null;
+    final now           = DateTime.now();
+    final firstName     = user?.name.split(' ').first ?? 'Usuario';
+    final habitsToday   = habits.where((h) => h.isCompletedToday()).length;
+    final totalHabits   = habits.length;
     final pendingHabits = habits.where((h) => !h.isCompletedToday()).toList();
 
     final habitsProgress  = totalHabits > 0 ? habitsToday / totalHabits : 0.0;
-    final sleepProgress   = lastSleep != null
-        ? (lastSleep.duration.inMinutes / 60.0 / 8.0).clamp(0.0, 1.0)
-        : 0.0;
-    final financeProgress = finances.balance > 0 ? 1.0
-        : (finances.balance > -500 ? 0.5 : 0.2);
+    final stepsProgress   = stepsNotifier.todayProgress;
+    // 0% si no hay transacciones; negativo tratado como 0% (se muestra en rojo)
+    final financeProgress = financesList.isEmpty
+        ? 0.0
+        : finances.balance >= 0
+            ? (finances.totalIncome > 0
+                ? (finances.balance / finances.totalIncome).clamp(0.0, 1.0)
+                : 1.0)
+            : 0.0;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -213,12 +217,12 @@ class DashboardScreen extends ConsumerWidget {
                   const SizedBox(height: 24),
                   _HeroCard(
                     habitsProgress: habitsProgress,
-                    sleepProgress: sleepProgress,
+                    stepsProgress: stepsProgress,
                     financeProgress: financeProgress,
                     habitsToday: habitsToday,
                     totalHabits: totalHabits,
-                    sleepHours: lastSleep != null
-                        ? lastSleep.duration.inMinutes / 60.0 : null,
+                    todaySteps: stepsNotifier.todaySteps,
+                    stepsGoal: stepsNotifier.dailyGoal,
                     balance: finances.balance,
                   ),
                   const SizedBox(height: 28),
@@ -278,14 +282,14 @@ class DashboardScreen extends ConsumerWidget {
                     label: 'Abrir',
                     onTap: () => context.go('/ai'),
                   ),
-                  if (lastSleep == null)
+                  if (stepsNotifier.todaySteps == 0)
                     _QuickCard(
-                      icon: Icons.bedtime_rounded,
-                      title: 'Registrar sueño',
-                      subtitle: 'Sin registro aún',
-                      color: AppColors.sleep,
-                      label: 'Registrar',
-                      onTap: () => context.go('/sleep'),
+                      icon: Icons.directions_walk_rounded,
+                      title: 'Registrar pasos',
+                      subtitle: 'Sin actividad hoy',
+                      color: AppColors.steps,
+                      label: 'Añadir',
+                      onTap: () => context.go('/steps'),
                     ),
                   _QuickCard(
                     icon: Icons.add_card_rounded,
@@ -356,25 +360,26 @@ class DashboardScreen extends ConsumerWidget {
 // ── Hero card ─────────────────────────────────────────────────────────────────
 
 class _HeroCard extends StatelessWidget {
-  final double habitsProgress, sleepProgress, financeProgress;
+  final double habitsProgress, stepsProgress, financeProgress;
   final int habitsToday, totalHabits;
-  final double? sleepHours;
+  final int todaySteps, stepsGoal;
   final double balance;
 
   const _HeroCard({
     required this.habitsProgress,
-    required this.sleepProgress,
+    required this.stepsProgress,
     required this.financeProgress,
     required this.habitsToday,
     required this.totalHabits,
-    required this.sleepHours,
+    required this.todaySteps,
+    required this.stepsGoal,
     required this.balance,
   });
 
   @override
   Widget build(BuildContext context) {
     final overall =
-        ((habitsProgress + sleepProgress + financeProgress) / 3 * 100).round();
+        ((habitsProgress + stepsProgress + financeProgress) / 3 * 100).round();
 
     return Container(
       decoration: BoxDecoration(
@@ -403,7 +408,7 @@ class _HeroCard extends StatelessWidget {
                     size: const Size(136, 136),
                     painter: _RingsPainter(
                       habitsProgress: habitsProgress,
-                      sleepProgress: sleepProgress,
+                      stepsProgress: stepsProgress,
                       financeProgress: financeProgress,
                     ),
                   ),
@@ -449,17 +454,20 @@ class _HeroCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   _LegendRow(
-                    color: AppColors.sleep,
-                    label: 'Sueño',
-                    detail: sleepHours != null
-                        ? '${sleepHours!.toStringAsFixed(1)}h' : '--',
-                    progress: sleepProgress,
+                    color: AppColors.steps,
+                    label: 'Pasos',
+                    detail: todaySteps > 0
+                        ? '${(todaySteps / 1000).toStringAsFixed(1)}k'
+                        : '--',
+                    progress: stepsProgress,
                   ),
                   const SizedBox(height: 10),
                   _LegendRow(
-                    color: AppColors.finances,
+                    color: balance < 0 ? AppColors.error : AppColors.finances,
                     label: 'Finanzas',
-                    detail: balance >= 0 ? 'Positivo' : 'Negativo',
+                    detail: balance < 0
+                        ? '-\$${balance.abs().toStringAsFixed(0)}'
+                        : '\$${balance.toStringAsFixed(0)}',
                     progress: financeProgress,
                   ),
                 ],
@@ -516,18 +524,18 @@ class _LegendRow extends StatelessWidget {
 }
 
 class _RingsPainter extends CustomPainter {
-  final double habitsProgress, sleepProgress, financeProgress;
+  final double habitsProgress, stepsProgress, financeProgress;
 
   const _RingsPainter(
       {required this.habitsProgress,
-       required this.sleepProgress,
+       required this.stepsProgress,
        required this.financeProgress});
 
   @override
   void paint(Canvas canvas, Size size) {
     final c = Offset(size.width / 2, size.height / 2);
     _ring(canvas, c, size.width / 2 - 8,  habitsProgress,  AppColors.habits);
-    _ring(canvas, c, size.width / 2 - 24, sleepProgress,   AppColors.sleep);
+    _ring(canvas, c, size.width / 2 - 24, stepsProgress,   AppColors.steps);
     _ring(canvas, c, size.width / 2 - 40, financeProgress, AppColors.finances);
   }
 
@@ -553,7 +561,7 @@ class _RingsPainter extends CustomPainter {
   @override
   bool shouldRepaint(_RingsPainter o) =>
       habitsProgress != o.habitsProgress ||
-      sleepProgress != o.sleepProgress ||
+      stepsProgress != o.stepsProgress ||
       financeProgress != o.financeProgress;
 }
 
