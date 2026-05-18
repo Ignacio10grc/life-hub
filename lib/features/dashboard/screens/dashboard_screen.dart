@@ -27,7 +27,8 @@ class DashboardScreen extends ConsumerWidget {
     final lastSleep = sleepEntries.isNotEmpty ? sleepEntries.first : null;
     final pendingHabits = habits.where((h) => !h.isCompletedToday()).toList();
 
-    final habitsProgress = totalHabits > 0 ? habitsToday / totalHabits : 0.0;
+    final habitsProgress =
+        totalHabits > 0 ? habitsToday / totalHabits : 0.0;
     final sleepProgress = lastSleep != null
         ? (lastSleep.duration.inMinutes / 60.0 / 8.0).clamp(0.0, 1.0)
         : 0.0;
@@ -39,7 +40,7 @@ class DashboardScreen extends ConsumerWidget {
       backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
-          // ── AppBar ──────────────────────────────────────────────────────────
+          // ── AppBar ────────────────────────────────────────────────────────
           SliverAppBar(
             floating: true,
             snap: true,
@@ -111,7 +112,7 @@ class DashboardScreen extends ConsumerWidget {
             ],
           ),
 
-          // ── Header greeting ─────────────────────────────────────────────────
+          // ── Greeting + hero ──────────────────────────────────────────────
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -140,8 +141,6 @@ class DashboardScreen extends ConsumerWidget {
                         color: AppColors.textSecondary, fontSize: 13),
                   ),
                   const SizedBox(height: 24),
-
-                  // ── Hero card ──────────────────────────────────────────────
                   _HeroProgressCard(
                     habitsProgress: habitsProgress,
                     sleepProgress: sleepProgress,
@@ -154,8 +153,6 @@ class DashboardScreen extends ConsumerWidget {
                     balance: finances.balance,
                   ),
                   const SizedBox(height: 28),
-
-                  // ── Section header ─────────────────────────────────────────
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -180,7 +177,7 @@ class DashboardScreen extends ConsumerWidget {
             ),
           ),
 
-          // ── Horizontal action cards ─────────────────────────────────────────
+          // ── Horizontal action cards ──────────────────────────────────────
           SliverToBoxAdapter(
             child: SizedBox(
               height: 152,
@@ -190,7 +187,7 @@ class DashboardScreen extends ConsumerWidget {
                 children: [
                   if (pendingHabits.isEmpty)
                     _ActionCard(
-                      emoji: '🎉',
+                      icon: Icons.celebration_rounded,
                       title: '¡Todo completado!',
                       subtitle: 'Todos los hábitos del día',
                       color: AppColors.habits,
@@ -199,7 +196,7 @@ class DashboardScreen extends ConsumerWidget {
                     )
                   else
                     ...pendingHabits.take(2).map((h) => _ActionCard(
-                          emoji: h.emoji,
+                          icon: Icons.check_circle_outline_rounded,
                           title: h.name,
                           subtitle: h.reminderTime != null
                               ? '${h.reminderTime} · ${h.timeOfDay}'
@@ -209,7 +206,7 @@ class DashboardScreen extends ConsumerWidget {
                           onTap: () => context.go('/habits'),
                         )),
                   _ActionCard(
-                    emoji: '🤖',
+                    icon: Icons.psychology_rounded,
                     title: 'LifeCoach IA',
                     subtitle: 'Tu agente personal',
                     color: AppColors.ai,
@@ -217,7 +214,7 @@ class DashboardScreen extends ConsumerWidget {
                     onTap: () => context.go('/ai'),
                   ),
                   _ActionCard(
-                    emoji: '💰',
+                    icon: Icons.add_card_rounded,
                     title: 'Registrar gasto',
                     subtitle: 'Balance al día',
                     color: AppColors.finances,
@@ -226,7 +223,7 @@ class DashboardScreen extends ConsumerWidget {
                   ),
                   if (lastSleep == null)
                     _ActionCard(
-                      emoji: '😴',
+                      icon: Icons.bedtime_rounded,
                       title: 'Registrar sueño',
                       subtitle: 'Aún sin registro',
                       color: AppColors.sleep,
@@ -234,7 +231,7 @@ class DashboardScreen extends ConsumerWidget {
                       onTap: () => context.go('/sleep'),
                     ),
                   _ActionCard(
-                    emoji: '📊',
+                    icon: Icons.bar_chart_rounded,
                     title: 'Ver estadísticas',
                     subtitle: 'Analiza tu progreso',
                     color: AppColors.steps,
@@ -246,7 +243,7 @@ class DashboardScreen extends ConsumerWidget {
             ),
           ),
 
-          // ── Modules section ─────────────────────────────────────────────────
+          // ── Modules grid ─────────────────────────────────────────────────
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 28, 20, 32),
@@ -262,7 +259,7 @@ class DashboardScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  _ModulesGrid(),
+                  const _ModulesGrid(),
                 ],
               ),
             ),
@@ -273,9 +270,9 @@ class DashboardScreen extends ConsumerWidget {
   }
 
   String _greeting(int hour) {
-    if (hour < 12) return 'Buenos días ☀️';
-    if (hour < 19) return 'Buenas tardes 🌤️';
-    return 'Buenas noches 🌙';
+    if (hour < 12) return 'Buenos días';
+    if (hour < 19) return 'Buenas tardes';
+    return 'Buenas noches';
   }
 
   void _confirmLogout(BuildContext context, WidgetRef ref) {
@@ -293,8 +290,8 @@ class DashboardScreen extends ConsumerWidget {
               Navigator.of(ctx).pop();
               ref.read(authProvider.notifier).logout();
             },
-            child:
-                const Text('Salir', style: TextStyle(color: AppColors.error)),
+            child: const Text('Salir',
+                style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),
@@ -347,7 +344,7 @@ class _HeroProgressCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // ── Concentric rings ─────────────────────────────────────────────
+            // ── Rings ──────────────────────────────────────────────────────
             SizedBox(
               width: 144,
               height: 144,
@@ -386,7 +383,7 @@ class _HeroProgressCard extends StatelessWidget {
             ),
             const SizedBox(width: 20),
 
-            // ── Legend ───────────────────────────────────────────────────────
+            // ── Legend ────────────────────────────────────────────────────
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -462,7 +459,8 @@ class _LegendItem extends StatelessWidget {
             Container(
               width: 8,
               height: 8,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              decoration:
+                  BoxDecoration(color: color, shape: BoxShape.circle),
             ),
             const SizedBox(width: 7),
             Text(label,
@@ -517,8 +515,8 @@ class _RingsPainter extends CustomPainter {
         AppColors.finances);
   }
 
-  void _drawRing(Canvas canvas, Offset center, double radius, double progress,
-      Color color) {
+  void _drawRing(Canvas canvas, Offset center, double radius,
+      double progress, Color color) {
     final trackPaint = Paint()
       ..color = color.withAlpha(28)
       ..style = PaintingStyle.stroke
@@ -552,7 +550,7 @@ class _RingsPainter extends CustomPainter {
 // ── Action card ───────────────────────────────────────────────────────────────
 
 class _ActionCard extends StatelessWidget {
-  final String emoji;
+  final IconData icon;
   final String title;
   final String subtitle;
   final Color color;
@@ -560,7 +558,7 @@ class _ActionCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const _ActionCard({
-    required this.emoji,
+    required this.icon,
     required this.title,
     required this.subtitle,
     required this.color,
@@ -577,22 +575,30 @@ class _ActionCard extends StatelessWidget {
         margin: const EdgeInsets.only(right: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.surfaceCard,
+          gradient: LinearGradient(
+            colors: [
+              color.withAlpha(38),
+              AppColors.surfaceCard,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: color.withAlpha(50)),
-          boxShadow: [
-            BoxShadow(
-              color: color.withAlpha(18),
-              blurRadius: 20,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          border: Border.all(color: color.withAlpha(55)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 26)),
-            const SizedBox(height: 8),
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: color.withAlpha(35),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const SizedBox(height: 10),
             Text(
               title,
               style: GoogleFonts.inter(
@@ -618,7 +624,7 @@ class _ActionCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: color.withAlpha(28),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: color.withAlpha(80)),
+                border: Border.all(color: color.withAlpha(90)),
               ),
               child: Text(
                 buttonLabel,
@@ -638,17 +644,82 @@ class _ActionCard extends StatelessWidget {
 
 // ── Modules grid ──────────────────────────────────────────────────────────────
 
+class _ModuleItem {
+  final String route;
+  final IconData icon;
+  final String label;
+  final Color color;
+  final List<Color> gradient;
+
+  const _ModuleItem(
+      this.route, this.icon, this.label, this.color, this.gradient);
+}
+
 class _ModulesGrid extends StatelessWidget {
-  final _modules = const [
-    _ModuleItem('/habits', '✅', 'Hábitos', AppColors.habits),
-    _ModuleItem('/finances', '💰', 'Finanzas', AppColors.finances),
-    _ModuleItem('/sleep', '😴', 'Sueño', AppColors.sleep),
-    _ModuleItem('/journal', '📓', 'Diario', AppColors.journal),
-    _ModuleItem('/routines', '🌅', 'Rutinas', AppColors.routines),
-    _ModuleItem('/ideas', '💡', 'Ideas', AppColors.ideas),
-    _ModuleItem('/timer', '⏱️', 'Temporizador', AppColors.timer),
-    _ModuleItem('/ai', '🤖', 'LifeCoach IA', AppColors.ai),
-    _ModuleItem('/stats', '📊', 'Estadísticas', AppColors.steps),
+  static const _modules = [
+    _ModuleItem(
+      '/habits',
+      Icons.check_circle_rounded,
+      'Hábitos',
+      AppColors.habits,
+      [Color(0xFF8B5CF6), Color(0xFF6D28D9)],
+    ),
+    _ModuleItem(
+      '/finances',
+      Icons.account_balance_wallet_rounded,
+      'Finanzas',
+      AppColors.finances,
+      [Color(0xFF10B981), Color(0xFF059669)],
+    ),
+    _ModuleItem(
+      '/sleep',
+      Icons.bedtime_rounded,
+      'Sueño',
+      AppColors.sleep,
+      [Color(0xFF818CF8), Color(0xFF6366F1)],
+    ),
+    _ModuleItem(
+      '/journal',
+      Icons.auto_stories_rounded,
+      'Diario',
+      AppColors.journal,
+      [Color(0xFFEC4899), Color(0xFFDB2777)],
+    ),
+    _ModuleItem(
+      '/routines',
+      Icons.playlist_add_check_rounded,
+      'Rutinas',
+      AppColors.routines,
+      [Color(0xFF3B82F6), Color(0xFF2563EB)],
+    ),
+    _ModuleItem(
+      '/ideas',
+      Icons.lightbulb_rounded,
+      'Ideas',
+      AppColors.ideas,
+      [Color(0xFFF97316), Color(0xFFEA580C)],
+    ),
+    _ModuleItem(
+      '/timer',
+      Icons.timer_rounded,
+      'Temporizador',
+      AppColors.timer,
+      [Color(0xFFF59E0B), Color(0xFFD97706)],
+    ),
+    _ModuleItem(
+      '/ai',
+      Icons.psychology_rounded,
+      'LifeCoach',
+      AppColors.ai,
+      [Color(0xFF22D3EE), Color(0xFF0891B2)],
+    ),
+    _ModuleItem(
+      '/stats',
+      Icons.bar_chart_rounded,
+      'Estadísticas',
+      AppColors.steps,
+      [Color(0xFF14B8A6), Color(0xFF0D9488)],
+    ),
   ];
 
   const _ModulesGrid();
@@ -662,7 +733,7 @@ class _ModulesGrid extends StatelessWidget {
         crossAxisCount: 3,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
-        childAspectRatio: 1.1,
+        childAspectRatio: 1.0,
       ),
       itemCount: _modules.length,
       itemBuilder: (context, i) {
@@ -671,33 +742,48 @@ class _ModulesGrid extends StatelessWidget {
           onTap: () => context.go(m.route),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.surfaceCard,
+              gradient: LinearGradient(
+                colors: [
+                  m.color.withAlpha(45),
+                  m.color.withAlpha(15),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: m.color.withAlpha(45)),
+              border: Border.all(color: m.color.withAlpha(60)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 44,
-                  height: 44,
+                  width: 46,
+                  height: 46,
                   decoration: BoxDecoration(
-                    color: m.color.withAlpha(22),
-                    borderRadius: BorderRadius.circular(13),
+                    gradient: LinearGradient(
+                      colors: m.gradient,
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: m.color.withAlpha(60),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
-                  child: Center(
-                    child: Text(m.emoji,
-                        style: const TextStyle(fontSize: 22)),
-                  ),
+                  child: Icon(m.icon, color: Colors.white, size: 22),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 9),
                 Text(
                   m.label,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
+                    color: AppColors.textPrimary,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -709,13 +795,4 @@ class _ModulesGrid extends StatelessWidget {
       },
     );
   }
-}
-
-class _ModuleItem {
-  final String route;
-  final String emoji;
-  final String label;
-  final Color color;
-
-  const _ModuleItem(this.route, this.emoji, this.label, this.color);
 }
