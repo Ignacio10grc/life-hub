@@ -16,9 +16,11 @@ class HabitsNotifier extends StateNotifier<List<Habit>> {
   void _load() {
     final raw = _box.get(_key);
     if (raw != null) {
-      state = (jsonDecode(raw as String) as List)
+      final list = (jsonDecode(raw as String) as List)
           .map((e) => Habit.fromJson(e as Map<String, dynamic>))
           .toList();
+      list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+      state = list;
     }
   }
 
@@ -26,11 +28,17 @@ class HabitsNotifier extends StateNotifier<List<Habit>> {
     await _box.put(_key, jsonEncode(state.map((h) => h.toJson()).toList()));
   }
 
-  Future<void> add(String name, String emoji) async {
+  Future<void> add(String name, String emoji, {String? reminderTime}) async {
     state = [
       ...state,
-      Habit(id: _uuid.v4(), name: name, emoji: emoji, completedDates: []),
+      Habit(
+          id: _uuid.v4(),
+          name: name,
+          emoji: emoji,
+          completedDates: [],
+          reminderTime: reminderTime),
     ];
+    state = [...state]..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
     await _save();
   }
 
@@ -44,12 +52,19 @@ class HabitsNotifier extends StateNotifier<List<Habit>> {
     await _save();
   }
 
-  Future<void> edit(String id, String name, String emoji) async {
+  Future<void> edit(String id, String name, String emoji,
+      {String? reminderTime}) async {
     state = state
         .map((h) => h.id == id
-            ? Habit(id: h.id, name: name, emoji: emoji, completedDates: h.completedDates)
+            ? Habit(
+                id: h.id,
+                name: name,
+                emoji: emoji,
+                completedDates: h.completedDates,
+                reminderTime: reminderTime)
             : h)
         .toList();
+    state = [...state]..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
     await _save();
   }
 }

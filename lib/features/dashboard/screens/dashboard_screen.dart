@@ -8,7 +8,6 @@ import '../../../features/auth/providers/auth_provider.dart';
 import '../../../features/finances/providers/finances_provider.dart';
 import '../../../features/habits/providers/habits_provider.dart';
 import '../../../features/sleep/providers/sleep_provider.dart';
-import '../../../features/timer/providers/timer_provider.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});

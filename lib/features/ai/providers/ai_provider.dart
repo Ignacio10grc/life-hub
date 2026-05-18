@@ -54,7 +54,7 @@ class AiNotifier extends StateNotifier<AiState> {
         _key, jsonEncode(state.messages.map((m) => m.toJson()).toList()));
   }
 
-  Future<void> send(String text) async {
+  Future<void> send(String text, {String userContext = ''}) async {
     final userMsg = ChatMessage(
       id: _uuid.v4(),
       role: MessageRole.user,
@@ -75,7 +75,11 @@ class AiNotifier extends StateNotifier<AiState> {
           .toList();
       history.add(userMsg.toApiMap());
 
-      final response = await _claude.chat(history);
+      final response = await _claude.chat(
+        history,
+        userContext: userContext,
+      );
+
       final assistantMsg = ChatMessage(
         id: _uuid.v4(),
         role: MessageRole.assistant,
@@ -90,7 +94,7 @@ class AiNotifier extends StateNotifier<AiState> {
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        error: 'Error al conectar con la IA: $e',
+        error: 'Error: ${e.toString().replaceAll('Exception: ', '')}',
       );
     }
   }
