@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from recursos import R
 from conceptos import BLOQUE, DEPENDENCIAS
 
-CORE_SET = set('S01 Y01 Y02 Y03 X06 S02 K02 P04 X02 K03 P01 P03 K05 K06 K07 X08 S07 B06 X21 M02 M04 X07 D01 S09 B08 S11 M06 M08 X15 S12 X28 M09 X11 S13 X17 K10 M10 X12 S15 S16 H01 X01'.split())
+CORE_SET = set('S01 Y01 Y02 Y03 X06 S02 K02 P04 X02 K03 P01 P03 K05 K06 K07 X08 S07 B06 X21 M02 M04 X07 D01 S09 B08 S11 M06 M08 X15 S12 X28 M09 X11 S13 X17 K10 M10 X12 S15 S16 H01 X01 K13 K16 K17 K19 K21 K24 K28 X39 X42'.split())
 for r in R: r['core'] = r['id'] in CORE_SET
 RID = {r['id']: r for r in R}
 NAME = {'C': 'COMPLETA', 'P': 'PARCIAL', 'A': 'AUSENTE', 'R': 'REDUNDANTE', 'I': 'RECURSO INADECUADO'}
@@ -64,7 +64,7 @@ for r in rows:
 
 out = {}
 L = []
-L.append(f"| Métrica | V1 | V2 |")
+L.append(f"| Métrica | V1 | V2.1 |")
 L.append("|---|---|---|")
 L.append(f"| Conceptos del bloque (hojas del temario, 5.1–5.26) | {N} | {N} |")
 for k in ['C', 'P', 'A', 'I']:
@@ -89,7 +89,7 @@ out['RECS'] = '\n'.join([
     f"| Sustituidos | {est['SUSTITUTO']} |",
     f"| Eliminados | {est['ELIMINADO']} |",
     f"| Nuevos | {est['NUEVO']} |",
-    f"| **Total en la V2 (sin eliminados)** | **{len(R)-est['ELIMINADO']}** |",
+    f"| **Total en la V2.1 (sin eliminados)** | **{len(R)-est['ELIMINADO']}** |",
     f"| Marcados como CORE | {sum(1 for r in R if r['core'])} |",
 ])
 
@@ -111,7 +111,7 @@ for r in rows:
     if r['sec'] != cur:
         cur = r['sec']
         M.append(f"\n#### {r['sec']} {r['tit']}\n")
-        M.append("| ID | Concepto | Recursos V2 | V1 | V2 | Evid. | Práctica | Acción |")
+        M.append("| ID | Concepto | Recursos V2.1 | V1 | V2.1 | Evid. | Práctica | Acción |")
         M.append("|---|---|---|---|---|---|---|---|")
     recs = ', '.join(r['recs']) if r['recs'] else '—'
     prmap = {'E': 'ejercicios', 'S': 'simulación', 'L': 'proyecto', '-': '—'}
@@ -170,7 +170,7 @@ out['DEPS'] = '\n'.join(["| ID | Dependencia necesaria | La necesita | Recurso |
 # evidencia de recursos
 evr = collections.Counter(r['ev'] for r in activos)
 out['EVR'] = f"E1: {evr['E1']} · E2: {evr['E2']} · E3: {evr['E3']}"
-out['REVMAN'] = '\n'.join(f"- {r['id']} · {r['name']}: {r['nota']}" for r in activos if 'REVISIÓN MANUAL' in r['nota'] or r['ev'] == 'E3')
+out['REVMAN'] = '\n'.join(f"- **{r['id']}** · {r['name']} — motivo: " + ('contenido verificado solo por el título (E3). ' if r['ev'] == 'E3' else '') + r['nota'] for r in activos if 'REVISIÓN MANUAL' in r['nota'] or r['ev'] == 'E3')
 out['HIGHQ'] = sum(1 for r in activos if r['tier'] == 'S')
 out['TIERS'] = ', '.join(f"{k}: {v}" for k, v in sorted(collections.Counter(r['tier'] for r in activos).items()))
 

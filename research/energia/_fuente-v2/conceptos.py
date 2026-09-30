@@ -11,7 +11,7 @@ Potencia|C|C|S01,X01|E1|E|Mantener
 Calor|C|C|Y01,X06|E1|E|Mantener
 Temperatura|C|C|Y01|E1|-|Mantener
 Entropía|P|C|Y03,Y02,X05|E1|E|Añadida Yale L24 (faltaba en la V1)
-Exergía|P|P|B01,S01|E1|-|Localizar la clase de exergía de NPTEL Engineering Thermodynamics (IIT Kanpur); solo hay «calidad de la energía»
+Exergía|P|C|K25,B01,S01|E1|-|NUEVO K25 (IIT Kanpur, L26 Exergy): falta el enlace directo a la clase
 Eficiencia|C|C|S01,P03|E1|E|Mantener
 Rendimiento|C|C|S01,P03|E1|E|Mantener
 Conservación de la energía|C|C|Y01,Z02|E1|S|Añadida simulación
@@ -68,22 +68,22 @@ Combustión incompleta|P|C|Z04,K01|E1|S|Cantera compara completa e incompleta
 Productos de combustión|P|P|Z04|E1|S|Solo simulación; falta teoría
 """),
 ("5.3.2", "Procesos de combustión", """
-Encendido|A|A|—|—|-|Hueco: NPTEL Fundamentals of Combustion part 2 (IIT Kanpur) sin clases localizadas
-Llama|P|P|Z06,O04|E1|L|Básico (cocinas) + posgrado (Matalon): falta el nivel intermedio
+Encendido|A|C|K26|E1|-|NUEVO K26 (encendido y energía mínima de ignición)
+Llama|P|C|K26,Z06,O04|E1|L|NUEVO K26 (llama premezclada laminar): cubre el nivel intermedio que faltaba
 Transferencia de calor|P|P|Z06,P04|E1|L|Aplicación en cocinas
-Temperatura de combustión|P|C|Z04,K01|E1|S|Temperatura adiabática de llama (Cantera)
-Velocidad de combustión|A|P|Z04|E1|S|Solo el ejemplo de llama laminar de Cantera
-Presión|A|A|—|—|-|Hueco
+Temperatura de combustión|P|C|K16,Z04,K01|E1|S|NUEVO K16 (teoría) + Z04 (simulación)
+Velocidad de combustión|A|C|K26,Z04|E1|S|NUEVO K26 (medición de la velocidad de combustión)
+Presión|A|P|K17|E3|-|Combustión en MEP/MEC (semana 6 del curso de IIT Guwahati): sin evidencia específica
 Rendimiento|P|P|Z06,K05|E1|L|Rendimiento de cocinas y calderas
 """),
 ("5.3.3", "Combustibles", """
 Madera|P|C|Z06,S06|E1|L|Principios de diseño de cocinas de leña
 Carbón|C|C|S05|E1|-|Mantener
-Carbón vegetal|A|A|—|—|-|Hueco
-Alcoholes|A|P|S06|E3|-|Sin recurso dedicado
+Carbón vegetal|A|C|X32|E1|L|NUEVO X32 (FAO)
+Alcoholes|A|C|K20,S06|E1|-|NUEVO K20 (metanol y etanol como combustibles de motor)
 Gas|P|C|S04|E1|-|NUEVO S04
-Gasolina|P|P|S03|E1|-|Solo refino
-Diésel|P|P|S03|E1|-|Solo refino
+Gasolina|P|C|K20,S03|E1|-|Índice de octano (K20) + refino (S03)
+Diésel|P|C|K20,S03|E1|-|Índice de cetano (K20) + refino (S03)
 Hidrógeno|C|C|S13|E1|-|Mantener
 Biocombustibles|P|P|S06|E1|-|Visión general
 """),
@@ -111,9 +111,9 @@ Cuerpo negro|C|C|P04,X02|E1|E|Mantener
 ("5.4.4", "Aplicaciones", """
 Aislamiento|P|C|X02,X01|E2|E|Mantener
 Intercambiadores de calor|P|C|X02,X03|E2|E|Mantener
-Calderas|P|C|K05|E1|-|NUEVO: IIT Roorkee (calderas)
+Calderas|P|C|K05,K15|E1|-|NUEVO K05 + K15 (pirotubulares)
 Hornos|A|P|Z06|E1|L|Solo cocinas y hornos domésticos; los industriales no
-Refrigeración|A|P|X31|E1|-|Curso NPTEL de refrigeración (IIT Roorkee): sin URL de clase, REVISIÓN MANUAL
+Refrigeración|A|C|K22,X31|E1|-|NUEVO K22 (L02 Introduction to Refrigeration; espejo)
 Disipadores|P|C|X02|E2|E|Aletas (Lienhard)
 """),
 ("5.5.1", "Sistemas", """
@@ -159,8 +159,8 @@ Rendimiento|C|C|Y02,P03|E1|E|Mantener
 Carnot|C|C|Y02|E1|E|Mantener
 Rankine|C|C|P03,K03,X05|E1|E|Mantener
 Brayton|C|C|P02,K07,X05|E1|E|Añadida Roorkee L31
-Otto|C|C|P01,X08|E2|E|Mantener
-Diesel|C|C|P01,X08|E2|E|Mantener
+Otto|C|C|P01,X08,X43|E2|E|Mantener
+Diesel|C|C|P01,X08,X43|E2|E|Mantener
 Stirling|C|C|P02,K03,Z08|E1|L|Añadido el proyecto de Stirling
 Ericsson|C|C|P02,K03|E1|E|Mantener
 """),
@@ -175,7 +175,7 @@ Aplicaciones|P|P|K03,X26|E3|-|Ejercicio propuesto
 """),
 ("5.7.1", "Producción de vapor", """
 Agua|P|P|X03|E2|-|Tratamiento del agua de caldera: sin recurso
-Caldera|P|C|K05|E1|-|NUEVO K05
+Caldera|P|C|K05,K15|E1|-|NUEVO K05 + K15
 Combustión|P|C|K05|E1|-|Temario de Roorkee: combustión en calderas
 Evaporación|P|C|X03,X06|E2|E|Cambio de fase
 Sobrecalentamiento|P|C|P03,K05|E1|E|Mantener
@@ -205,27 +205,27 @@ Etapas|A|P|K06|E1|-|Compounding (L22) sin URL
 Condensación|P|P|B02,X03|E3|-|Sin recurso específico
 """),
 ("5.8.1", "Conceptos del MCI", """
-Cilindro|P|P|X08,U01|E2|-|HUECO audiovisual S/A; X08 son diapositivas
-Pistón|P|P|X08,U01|E2|-|Ídem
-Biela|P|P|X08|E2|-|DEPENDENCIA del Bloque 4 (biela-manivela)
-Cigüeñal|P|P|X08|E2|-|Ídem
-Volante|P|P|X08|E2|-|Ídem
-Válvulas|P|P|X08|E2|-|Ídem
-Árbol de levas|P|P|X08|E2|-|Ídem
-Inyección|P|P|X08|E2|-|Ídem
-Encendido|P|P|X08|E2|-|Ídem
+Cilindro|P|C|K17,X08,U01|E1|-|NUEVO K17 (L01 engine components)
+Pistón|P|C|K17,X08,U01|E1|-|NUEVO K17
+Biela|P|C|K17,X08|E1|-|NUEVO K17 · DEPENDENCIA del Bloque 4
+Cigüeñal|P|C|K17,X08|E1|-|NUEVO K17
+Volante|P|P|K17,X08|E3|-|No consta de forma explícita en el temario
+Válvulas|P|C|K17,X08|E1|-|NUEVO K17
+Árbol de levas|P|P|K17,X08|E3|-|No consta de forma explícita en el temario
+Inyección|P|C|K19,X08|E1|-|NUEVO K19 (tipos de inyectores)
+Encendido|P|C|K19,X08|E1|-|NUEVO K19 (encendido por batería y por magneto)
 """),
 ("5.8.2", "Ciclo Otto", """
-Admisión|P|C|P01,X08|E2|E|Mantener
-Compresión|C|C|P01,X08|E2|E|Mantener
-Combustión|P|C|P01,X08|E2|E|Mantener
-Expansión|C|C|P01,X08|E2|E|Mantener
-Escape|P|C|P01,X08|E2|E|Mantener
+Admisión|P|C|P01,X08,X43|E2|E|Mantener
+Compresión|C|C|P01,X08,X43|E2|E|Mantener
+Combustión|P|C|P01,X08,X43|E2|E|Mantener
+Expansión|C|C|P01,X08,X43|E2|E|Mantener
+Escape|P|C|P01,X08,X43|E2|E|Mantener
 """),
 ("5.8.3", "Ciclo Diesel", """
 Admisión|P|C|P01,X08|E2|E|Mantener
 Compresión|C|C|P01,X08|E2|E|Mantener
-Inyección|P|P|X08|E2|-|Solo diapositivas
+Inyección|P|C|K19,X08|E1|-|NUEVO K19
 Combustión|P|C|P01,X08|E2|E|Mantener
 Expansión|C|C|P01,X08|E2|E|Mantener
 Escape|P|C|P01,X08|E2|E|Mantener
@@ -233,35 +233,35 @@ Escape|P|C|P01,X08|E2|E|Mantener
 ("5.8.4", "Sistemas auxiliares", """
 Lubricación|A|P|X08|E1|-|MIT 2.61 L19 (fricción y tribología), solo diapositivas
 Refrigeración|A|P|X08|E1|-|Transferencia de calor en el motor (diapositivas)
-Alimentación|A|P|X08|E2|-|HUECO
+Alimentación|A|P|K17,X08|E1|-|Carburación (semana 4 de IIT Guwahati) sin enlace directo a la clase
 Escape|A|P|X08|E2|-|HUECO
-Encendido|A|P|X08|E2|-|HUECO
-Inyección|A|P|X08|E2|-|HUECO
+Encendido|A|C|K19|E1|-|NUEVO K19
+Inyección|A|C|K19,X08|E1|-|NUEVO K19 (semana 5: sistemas de inyección)
 Sobrealimentación|A|P|X08|E1|-|MIT 2.61 L20 (turbocompresión)
 """),
 ("5.8.5", "Rendimiento del MCI", """
-Potencia|P|P|X08|E2|E|Ejercicios de MIT 2.61
-Par|A|P|X08|E2|E|Ídem
-Consumo específico|A|P|X08|E2|E|Ídem
+Potencia|P|P|K18,X08|E3|E|NUEVO K18 (características de funcionamiento): contenido sin confirmar
+Par|A|P|K18,X08|E3|E|Ídem
+Consumo específico|A|P|K18,X08|E3|E|Ídem
 Eficiencia térmica|C|C|P01,X08|E2|E|Mantener
 Pérdidas|A|P|X08|E1|E|Fricción (L19)
 """),
 ("5.9.1", "Turbinas de vapor", """
 Impulso|P|C|K06|E1|-|NUEVO K06
-Reacción|A|P|K06|E1|-|L26 de Roorkee (acción-reacción) sin URL
+Reacción|A|C|K13|E1|-|NUEVO K13 (L26 Impulse Reaction Steam Turbine)
 Etapas|A|P|K06|E1|-|L22 (compounding) sin URL
-Álabes|P|P|K06|E3|-|Triángulos de velocidades (no verificados)
+Álabes|P|C|K06,K13|E1|-|K06 + K13 (álabes de acción y de reacción)
 """),
 ("5.9.2", "Turbinas de gas", """
-Compresor|P|P|K07,X05|E1|-|Clases de compresores de Roorkee sin URL
+Compresor|P|C|K14,K07,X05|E1|-|NUEVO K14 (compresores centrífugos)
 Cámara de combustión|A|P|K07|E1|-|Ídem
 Turbina|P|C|K07,X05,X26|E1|E|NUEVO K07
 Escape|P|P|K07|E3|-|Implícito en el ciclo
 """),
 ("5.9.3", "Turbinas hidráulicas", """
 Pelton|P|C|K08,Z07|E1|L|Mantener K08 + proyecto
-Francis|I|P|K09|E1|-|La V1 lo daba por cubierto con B04 sin evidencia; K09 solo trata la regulación
-Kaplan|I|P|K09|E1|-|Ídem
+Francis|I|C|K24,K09|E1|-|NUEVO K24 (IIT Madras: Francis, partes 1 y 2); enlace al curso
+Kaplan|I|C|K24,K09|E1|-|NUEVO K24 (IIT Madras: Kaplan); enlace al curso
 """),
 ("5.9.4", "Turbinas eólicas", """
 Rotor|P|C|D01|E1|-|NUEVO D01
@@ -283,7 +283,7 @@ Energía potencial→cinética→turbina→generador→electricidad|C|C|S07,B03,
 """),
 ("5.10.3", "Infraestructura", """
 Presa|C|C|S07|E1|-|Mantener
-Aliviadero|A|A|—|—|-|Hueco (menor)
+Aliviadero|A|C|X33|E1|-|NUEVO X33 (USBR Design of Small Dams)
 Tubería forzada|A|C|Z07|E2|L|NUEVO Z07
 Turbina|P|C|S07,K08|E1|-|Mantener
 Generador|P|P|S07,K11|E3|-|Véase 5.20
@@ -305,10 +305,10 @@ Concentración solar|P|C|X13|E1|-|NUEVO X13 (lección 7 CSP)
 """),
 ("5.11.2", "Solar fotovoltaica", """
 Fotones|C|C|M03,X07|E1|-|Mantener
-Semiconductores|C|C|M05,X07|E1|-|Añadida L7
-Célula solar|C|C|M05,X07|E1|-|Mantener
-Módulo|C|C|M04,X07|E1|-|Mantener
-Panel|C|C|M04,X07|E1|-|Mantener
+Semiconductores|C|C|M05,X07,X41|E1|E|Añadida L7
+Célula solar|C|C|M05,X07,X41|E1|E|Mantener
+Módulo|C|C|M04,X07,X41|E1|E|Mantener
+Panel|C|C|M04,X07,X41|E1|E|Mantener
 Inversor|A|C|X13|E1|-|Acondicionamiento de potencia (EME 812)
 """),
 ("5.11.3", "Sistemas solares", """
@@ -351,12 +351,12 @@ Turbinas submarinas|A|P|X19|E1|-|Solo ficha introductoria
 Convertidores de oleaje|P|P|B09,X19|E3|-|Mantener
 """),
 ("5.15.1", "Fundamentos nucleares", """
-Núcleo atómico|P|C|M06,X04|E1|E|NUEVO M06
-Isótopos|P|C|M06,X04|E1|E|NUEVO M06
-Defecto de masa|P|C|M06|E1|E|NUEVO M06
-Energía de enlace|P|C|M06|E1|E|NUEVO M06
-Radiactividad|P|C|M07,X04,X23|E1|E|NUEVO M07
-Decaimiento|P|C|M07,X04|E1|E|NUEVO M07
+Núcleo atómico|P|C|M06,X04,X42|E1|E|NUEVO M06
+Isótopos|P|C|M06,X04,X42|E1|E|NUEVO M06
+Defecto de masa|P|C|M06,X42|E1|E|NUEVO M06
+Energía de enlace|P|C|M06,X42|E1|E|NUEVO M06
+Radiactividad|P|C|M07,X04,X23,X42|E1|E|NUEVO M07
+Decaimiento|P|C|M07,X04,X42|E1|E|NUEVO M07
 """),
 ("5.15.2", "Fisión", """
 Neutrón|P|C|X04,M08|E1|-|Mantener
@@ -414,7 +414,7 @@ Baterías de flujo|A|C|X28|E1|-|NUEVO X28
 """),
 ("5.16.4", "Químico", """
 Hidrógeno|C|C|S13|E1|-|Mantener
-Combustibles sintéticos|A|A|—|—|-|Hueco
+Combustibles sintéticos|A|C|X35|E1|-|NUEVO X35 (IEA e-fuels)
 """),
 ("5.16.5", "Eléctrico", """
 Condensadores|A|P|X10|E3|-|DEPENDENCIA: electricidad (Bloque 6)
@@ -435,7 +435,7 @@ Densidad energética|P|C|X29,X11|E1|-|NUEVO
 Ciclos|A|P|X11|E2|-|Sin evidencia específica
 Degradación|A|C|X11|E1|-|Estado de salud (SOH)
 Estado de carga|A|C|X11|E1|E|NUEVO X11
-Gestión térmica|A|P|X11|E3|-|Sin evidencia específica
+Gestión térmica|A|C|X44,X11|E1|-|NUEVO X44 (modelado térmico de celdas, Plett)
 BMS|A|C|X11|E1|E|NUEVO X11
 """),
 ("5.17b", "Baterías — familias", """
@@ -444,7 +444,7 @@ NiCd|A|P|X29|E1|-|Solo fuente B
 NiMH|A|P|X29|E1|-|Solo fuente B
 Li-ion|P|C|M09,X10,X29|E1|-|Mantener
 LiFePO₄|A|P|X29|E1|-|Solo fuente B
-Estado sólido|A|A|—|—|-|Hueco
+Estado sólido|A|P|X38|E3|-|NUEVO X38: solo título verificado
 Flujo|A|C|X28|E1|-|NUEVO X28
 """),
 ("5.18a", "Hidrógeno — producción", """
@@ -475,10 +475,10 @@ Electrolito|P|C|K10,X10|E1|-|Mantener
 Hidrógeno|C|C|K10|E1|-|Mantener
 Oxígeno|C|C|K10|E1|-|Mantener
 Reacción electroquímica|P|C|K10,X10|E1|-|Mantener
-PEMFC|A|P|K10|E3|-|Sin evidencia específica
-SOFC|A|P|K10|E3|-|Sin evidencia específica
+PEMFC|A|C|X39,K10|E1|-|NUEVO X39 (cuadro comparativo del DOE)
+SOFC|A|C|X39,K10|E1|-|NUEVO X39
 Eficiencia|P|C|X10|E1|-|Termodinámica de la celda
-Gestión térmica|A|A|—|—|-|Hueco
+Gestión térmica|A|P|X40|E2|-|NUEVO X40 (manual de pilas del NETL)
 """),
 ("5.20a", "Generación — conversión", """
 Energía primaria→mecánica→generador→electricidad|C|C|S14,S07|E1|-|Mantener
@@ -503,10 +503,10 @@ Carga|P|C|S15,Z10|E1|S|NUEVO Z10
 ("5.21b", "Redes — infraestructura", """
 Líneas|P|C|X12|E1|E|Hoja de problemas 5 (líneas de transmisión)
 Transformadores|P|C|X12,Z01|E2|E|NUEVO
-Subestaciones|A|A|—|—|-|Hueco
-Interruptores|A|A|—|—|-|Hueco
-Protecciones|A|P|X22|E1|-|Solo desde la seguridad laboral
-Medición|A|A|—|—|-|Hueco
+Subestaciones|A|P|K21|E3|-|NUEVO K21 (contexto de protecciones)
+Interruptores|A|C|K21|E1|-|NUEVO K21 (aparamenta)
+Protecciones|A|C|K21,X22|E1|-|NUEVO K21 (relés de protección)
+Medición|A|C|K27|E1|-|NUEVO K27 (contador de energía)
 """),
 ("5.21c", "Redes — conceptos", """
 Demanda|P|C|S15,Z10|E1|S|NUEVO Z10
@@ -523,8 +523,8 @@ Rendimiento|C|C|S16|E1|-|Mantener
 Pérdidas|P|P|S16,X01|E2|-|Mantener
 Aislamiento|P|C|X02,X01|E2|E|Mantener
 Recuperación de calor|A|P|X27|E1|-|Curso NPTEL sin URL de clase
-Cogeneración|A|P|K05|E1|-|Clase de cogeneración de Roorkee (semana 1) sin URL
-Trigeneración|A|A|—|—|-|Hueco
+Cogeneración|A|C|K28,X36|E1|-|NUEVO K28 (L04) + X36 (DOE)
+Trigeneración|A|P|X36|E3|-|Sin evidencia específica en X36
 Recuperación energética|A|P|X27|E1|-|Ídem
 Optimización|P|C|S16|E1|-|Diseño integrador
 Gestión de demanda|A|P|S16,Z10|E3|-|Sin recurso dedicado
@@ -537,7 +537,7 @@ Alta presión|A|P|H01,K05|E3|-|Calderas: sin guía de seguridad
 Electricidad|A|C|X22|E1|-|NUEVO X22 (INSST)
 Radiación|A|C|X23,X04|E1|-|NUEVO X23 (CSN)
 Combustibles|P|C|X18,H01|E1|-|NUEVO X18 (H₂)
-Almacenamiento|A|P|X18|E1|-|Sin recurso sobre seguridad de baterías de litio
+Almacenamiento|A|C|X37,X18|E1|-|NUEVO X37 (UL FSRI: fuga térmica de baterías de litio)
 Ventilación|A|C|X18|E1|-|NUEVO X18
 Contención|A|P|X18|E1|-|Mantener
 Protección|A|P|X22|E1|-|Mantener
@@ -545,9 +545,9 @@ Procedimientos de emergencia|A|C|X18|E1|-|NUEVO X18
 """),
 ("5.24", "Infraestructura energética", """
 Cadena recurso→extracción→…→consumo|C|C|S01,S14,S15,X01|E1|-|Mantener
-Medición|A|P|Z10|E3|-|Sin recurso dedicado
+Medición|A|C|K27,Z10|E1|S|NUEVO K27
 Control|A|P|S15|E3|-|Bloque 6
-Mantenimiento|A|A|—|—|-|Hueco
+Mantenimiento|A|P|X34,X33|E1|-|NUEVO X34 (solo FV y almacenamiento) + X33 (presas)
 Seguridad|A|C|X22,X18,H01|E1|-|Véase 5.23
 Optimización|P|P|S16|E1|-|Mantener
 """),
@@ -567,7 +567,7 @@ Energía nuclear / renovables|P|P|S11,H02|E1|-|Mantener
 Sistemas energéticos complejos|P|P|H02,X01|E3|-|Mantener
 """),
 ("5.26", "Proyectos integradores", """
-N1 Horno básico|A|P|Z06|E1|L|Principios de cocinas; falta un horno de mampostería
+N1 Horno básico|A|P|Z06,X32|E1|L|Z06 (cocinas) + X32 (hornos de carbonización); falta un horno de mampostería
 N1 Cocina eficiente|A|C|Z06|E1|L|NUEVO Z06
 N1 Quemador|A|P|Z06,Z04|E1|L|Sin guía de quemador de gas: ESCALA SEGURA
 N1 Colector solar térmico|A|P|X21,B06|E1|L|Diseño sí; guía de construcción no
@@ -582,7 +582,7 @@ N3 Microturbina|A|P|Z07|E1|L|Mantener
 N3 Microhidráulica|A|C|Z07|E1|L|NUEVO Z07
 N3 Sistema solar fotovoltaico|P|C|Z03,X20,X07|E1|L|NUEVO Z03
 N3 Sistema eólico|A|C|Z09,D01|E1|L|NUEVO Z09
-N4 Batería|A|P|X11,M09|E1|-|Sin guía de laboratorio segura
+N4 Batería|A|P|X11,M09,X37|E1|-|Sin guía de laboratorio segura; X37 para riesgos
 N4 Sistema de almacenamiento térmico|A|P|X21|E2|-|Sin guía
 N4 Almacenamiento mecánico|A|A|—|—|-|Hueco
 N4 Sistema solar + batería|A|C|Z03,X11,X20|E1|L|NUEVO
