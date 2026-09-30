@@ -3,8 +3,11 @@ block: Bloque 5 — Energía
 subject: Energía (ingeniería energética)
 date: 2026-09-30
 concepts: [5.1 Fundamentos de la energía, 5.2 Recursos energéticos, 5.3 Combustión, 5.4 Transferencia de calor, 5.5 Termodinámica aplicada, 5.6 Máquinas térmicas, 5.7 Vapor y máquinas de vapor, 5.8 Motores de combustión interna, 5.9 Turbinas, 5.10 Energía hidráulica, 5.11 Energía solar, 5.12 Energía eólica, 5.13 Energía geotérmica, 5.14 Energía marina, 5.15 Energía nuclear, 5.16 Almacenamiento de energía, 5.17 Baterías, 5.18 Hidrógeno, 5.19 Pilas de combustible, 5.20 Generación eléctrica, 5.21 Redes energéticas, 5.22 Eficiencia energética, 5.23 Seguridad energética, 5.24 Infraestructura energética, 5.25 Evolución tecnológica de la energía, 5.26 Proyectos integradores, 5.27 Mapa de dependencias]
-status: con-huecos
+status: sustituido
+superseded_by: research/energia/bloque-5-energia-v2.md
 ---
+
+> ⚠️ **Versión sustituida.** Esta es la V1. Usa [`bloque-5-energia-v2.md`](bloque-5-energia-v2.md): contiene la auditoría concepto a concepto y el plan corregido.
 
 # Bloque 5 — Energía
 
